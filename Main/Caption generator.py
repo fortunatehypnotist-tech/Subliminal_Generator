@@ -4,6 +4,11 @@ import os
 import glob
 import cv2
 
+if not(os.path.exists('Caption_Frames')):
+    os.makedirs('Caption_Frames')
+if not(os.path.exists('Flashy_Frames')):
+    os.makedirs('Flashy_Frames')
+
 files = glob.glob('Caption_Frames/*')
 for f in files:
     os.remove(f)
@@ -79,14 +84,14 @@ except:
     Value=40
 Max_font_size=Value
 try:
-    print("What is the minimum number of frames that a sublinal should be present for?")
+    print("What is the minimum number of frames that a subliminal should be present for?")
     Value=int(input())
 except:
     print("Value was not accepted as an integer. Defaulting to 1")
     Value=1
 Min_frames=Value
 try:
-    print("What is the maximum number of frames that a sublinal should be present for?")
+    print("What is the maximum number of frames that a subliminal should be present for?")
     Value=int(input())
 except:
     print("Value was not accepted as an integer. Defaulting to 1")
@@ -282,11 +287,12 @@ def Subliminal_Generator(length=length,fps=fps,Min_num_subs=Min_num_subs,Max_num
         images = [f"{img}.jpeg" for img in range(1,len(os.listdir(image_folder))+1)]
         height, width, layers = [y_length,x_length,1]
 
-        # Video writer to create .avi file
+        # Video writer to create .mp4 file
         video = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
         # Appending images to video
         for image in images:
+            print(f"{image} of {len(images)}")
             video.write(cv2.imread(os.path.join(image_folder, image)))
 
         # Release the video file
