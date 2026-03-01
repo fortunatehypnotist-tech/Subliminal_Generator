@@ -144,8 +144,11 @@ if Center:
 else:
     Center_text=Master_text
     
-#print(Center_text)
+
+for text in Center_text:
+    print(text[:text.find("{")])
 temp=[]
+
 if Center:
     for i in range(len(Center_text)):
         repeat_num=0
@@ -158,32 +161,8 @@ if Center:
         temp.append(middle_text)
         for j in range(repeat_num):
             temp.append(middle_text)
-        
+            
 Center_text=temp
-for text in Center_text:
-    print(text)
-
-# Function to generate video
-def generate_video(path,fps):
-    image_folder = path
-    video_name = f'{path[:path.find("_")]} video.mp4'
-
-    images = [f"{img}.jpeg" for img in range(1,len(os.listdir(image_folder))+1)]
-    # print(images)
-    # Set frame from the first image
-    frame = cv2.imread(os.path.join(image_folder, images[0]))
-    height, width, layers = frame.shape
-
-    # Video writer to create .avi file
-    video = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
-
-    # Appending images to video
-    for image in images:
-        video.write(cv2.imread(os.path.join(image_folder, image)))
-
-    # Release the video file
-    video.release()
-    cv2.destroyAllWindows()
 
 def Subliminal_Generator(length=length,fps=fps,Min_num_subs=Min_num_subs,Max_num_subs=Max_num_subs,Min_font_size=Min_font_size,Max_font_size=Max_font_size,Min_frames=Min_frames,Max_frames=Max_frames,Text_In_Order=Text_In_Order,Flashy=Flashy,Probability_Blank=Probability_Blank,Flash_max_length=Flash_max_length,Center=Center):
     Frame=0
@@ -199,7 +178,6 @@ def Subliminal_Generator(length=length,fps=fps,Min_num_subs=Min_num_subs,Max_num
         length=99999999999999
     while Frame<length*fps:
         im = Image.new(mode="RGB", size=(x_length,y_length))
-        #print(Frame)
         draw = ImageDraw.Draw(im) 
         if SubFrameMax==0:
             SubFrameMax=randint(Min_frames,Max_frames)
@@ -296,18 +274,27 @@ def Subliminal_Generator(length=length,fps=fps,Min_num_subs=Min_num_subs,Max_num
             
         SubFrameMax=0
         
+    # Function to generate video
+    def generate_video(path,fps):
+        image_folder = path
+        video_name = f'{path[:path.find("_")]} video.mp4'
+
+        images = [f"{img}.jpeg" for img in range(1,len(os.listdir(image_folder))+1)]
+        height, width, layers = [y_length,x_length,1]
+
+        # Video writer to create .avi file
+        video = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
+
+        # Appending images to video
+        for image in images:
+            video.write(cv2.imread(os.path.join(image_folder, image)))
+
+        # Release the video file
+        video.release()
+        cv2.destroyAllWindows()
+        
         
     generate_video("Caption_Frames", fps)
-    # images = []
-    # i=1
-    # while True:
-    #     try:
-    #         images.append(imageio.imread(f"Caption_frames/Frame {i}.jpeg"))
-    #     except:
-    #         print(f"Ended on frame {i}")
-    #         break
-    #     i+=1
-    # imageio.mimsave('movie.gif', images,fps=fps)
     
     Flashy_Coords=list(set(Flashy_Coords))
     
@@ -329,17 +316,6 @@ def Subliminal_Generator(length=length,fps=fps,Min_num_subs=Min_num_subs,Max_num
             im.save(f"Flashy_Frames/{i}.jpeg")
     
     generate_video("Flashy_Frames",fps)
-    # images = []
-    # i=1
-    # while True:
-    #     try:
-    #         images.append(imageio.imread(f"Flashy_frames/Frame {i}.jpeg"))
-    #     except:
-    #         print(f"Ended on frame {i}")
-    #         break
-    #     i+=1
-    # imageio.mimsave('flashy.gif', images,fps=fps)
-    # print("Finished!")
     
     files = glob.glob('Caption_Frames/*')
     for f in files:
@@ -350,3 +326,4 @@ def Subliminal_Generator(length=length,fps=fps,Min_num_subs=Min_num_subs,Max_num
         os.remove(f)
         
 Subliminal_Generator()
+print("Finished")
